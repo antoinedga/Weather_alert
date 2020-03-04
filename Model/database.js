@@ -23,20 +23,22 @@ connection.connect(function(err) {
     console.log('connected to database as id ' + connection.threadId);
   });
 
-  module.exports.databaseController = connection;
 }
 
-
+// mysql version to find user thats logging in
+// had to make it a promise to work get results before doing anything with it
+// default value is an empty string for safety with query
 module.exports.userFindOne = function(email = "")
 {
     return new Promise(function(resolve, reject) {
         
     connection.query(`select email, password from user_account where email = \'${email}\';`, (err, usr, fields) => {
-       
-        
         if (err)
           return reject(err);
-        
+
+        if(isEmpty(usr))
+          resolve(null);
+        // hackie, converts into a JSON format to later be a Javascript Object
         resolve(JSON.parse(JSON.stringify(usr))[0]);
     });
   });
