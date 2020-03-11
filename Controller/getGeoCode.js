@@ -1,8 +1,7 @@
 var zipfunc = require('zipcodes');
-var dark = require('./darkSki.js');
 
 
-module.exports = function getGeoCoordination(zipCode) 
+module.exports.getGeoCoordination = function getGeoCoordination(zipCode) 
 {
     var geo = {
         lat: "",
@@ -10,6 +9,9 @@ module.exports = function getGeoCoordination(zipCode)
     }
 
     var temp = zipfunc.lookup(zipCode);
+
+    if (temp == undefined)
+        return null
 
     geo.lat = temp.latitude;
     geo.long = temp.longitude;

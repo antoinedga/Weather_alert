@@ -4,6 +4,7 @@ const cors = require('cors');
 const app = express();
 const axios = require('axios');
 const path = require('path');
+const user = require('./Controller/user');
 require('dotenv').config;
 const db = require('./Model/database.js');
 
@@ -22,10 +23,10 @@ app.use(
 );
 app.use(bodyParser.json());
 // DB Config
+app.use('/user', user);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
 })
-
 
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));

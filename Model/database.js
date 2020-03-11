@@ -32,17 +32,64 @@ module.exports.userFindOne = function(email = "")
 {
     return new Promise(function(resolve, reject) {
         
-    connection.query(`select email, password from user_account where email = \'${email}\';`, (err, usr, fields) => {
+    connection.query(`select _id, email, password from user_info where email = \'${email}\';`, (err, usr, fields) => {
         if (err)
           return reject(err);
 
         if(isEmpty(usr))
           resolve(null);
+
         // hackie, converts into a JSON format to later be a Javascript Object
         resolve(JSON.parse(JSON.stringify(usr))[0]);
     });
   });
 }
 
+
+module.exports.createNewUser = function(user) {
+var id;
+  return new Promise(function(resolve, reject) {
+
+    connection.beginTransaction(function(err) {
+      if (err) { throw err; }
+
+      connection.query(`INSERT INTO user_info (username, email, password) values (\'${user.name}\', \'${user.email}\', \'${user.password}\')`, function (error, results, fields) {
+        if (error) {
+          return connection.rollback(function() {
+            throw error;
+          });
+        }
+          id = results.insertId
+          console.log(id);
+        });
+
+        connection.query(`INSERT INTO user_info (username, email, password) values (\'${user.name}\', \'${user.email}\', \'${user.password}\')`, function (error, results, fields) {
+          if (error) {
+            return connection.rollback(function() {
+              throw error;
+            });
+          }
+            id = results.insertId
+            console.log(id);
+          });
+
+        connection.commit(function(err) {
+          if (err) {
+            return connection.rollback(function() {
+              throw err;
+            });
+          };
+        });
+        
+
+      });
+
+
+      
+    });
+
+    
+
+  }
 
 

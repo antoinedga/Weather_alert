@@ -1,5 +1,10 @@
 const Validator = require("validator");
 const isEmpty = require("is-empty");
+const zipCode = require('../getGeoCode');
+
+
+
+
 module.exports = function validateRegisterInput(data) {
   let errors = {};
 // Convert empty fields to an empty string so we can use validator functions
@@ -11,10 +16,18 @@ module.exports = function validateRegisterInput(data) {
   if (Validator.isEmpty(data.name)) {
     errors.name = "Name field is required";
   }
+
+  if (Validator.isEmpty(data.zipcode)) {
+    errors.zipCode = "zipCode field is required";
+  }
+  else if(zipCode.getGeoCoordination(data.zipcode) == null)
+    errors.zipCode = "INVALID zipCode";
+
 // Email checks
   if (Validator.isEmpty(data.email)) {
     errors.email = "Email field is required";
-  } else if (!Validator.isEmail(data.email)) {
+  } 
+  else if (!Validator.isEmail(data.email)) {
     errors.email = "Email is invalid";
   }
 // Password checks
