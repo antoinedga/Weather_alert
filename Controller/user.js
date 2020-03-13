@@ -36,11 +36,16 @@ router.post("/register", (req, res) => {
       bcrypt.hash(newUser.password, salt, (err, hash) => {
             if (err) throw err;
             newUser.password = hash;
-            database.createNewUser(newUser);
+            database.createNewUser(newUser).then(() => {
+            return res.status(200).send('Account created')
+            }
+            )
+            .catch((error) => {
+              res.status(400).send(error);
+            });
           });
         });
 
-        return res.status(200).send('Account created')
       }
     });
     

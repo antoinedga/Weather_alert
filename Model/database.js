@@ -1,35 +1,35 @@
 var mysql = require('mysql');
 var isEmpty = require('is-empty');
+var location = require('../Controller/getGeoCode');
 var connection = null;
 
 module.exports.start_connection = function start_connection() {
 
-connection = mysql.createConnection({
-    host: "weather-db-email.mysql.database.azure.com", 
-    user: "antoinedga@weather-db-email",
-    database : 'weather_email',
-    password: "Adga7241805!", 
-    port: 3306, 
-    ssl:true
-});
-
-
-connection.connect(function(err) {
-    if (err) {
-      console.error('error connecting: ' + err.stack);
-      return;
-    }
-   
-    console.log('connected to database as id ' + connection.threadId);
+  connection = mysql.createConnection({
+      host: "weather-db-email.mysql.database.azure.com", 
+      user: "antoinedga@weather-db-email",
+      database : 'weather_email',
+      password: "Adga7241805!", 
+      port: 3306, 
+      ssl:true
   });
+
+
+  connection.connect(function(err) {
+      if (err) {
+        console.error('error connecting: ' + err.stack);
+        return;
+      }
+    
+      console.log('connected to database as id ' + connection.threadId);
+    });
 
 }
 
 // mysql version to find user thats logging in
 // had to make it a promise to work get results before doing anything with it
 // default value is an empty string for safety with query
-module.exports.userFindOne = function(email = "")
-{
+module.exports.userFindOne = function(email = "") {
     return new Promise(function(resolve, reject) {
         
     connection.query(`select _id, email, username, password from user_info where email = \'${email}\';`, (err, usr, fields) => {
@@ -46,53 +46,55 @@ module.exports.userFindOne = function(email = "")
 
 
 module.exports.createNewUser = function(user) {
-var id;
-  return new Promise(function(resolve, reject) {
+  
+  return new Promise(async function(resolve, reject) {
 
     connection.beginTransaction(function(err) {
       if (err) { throw err; }
-
+      var id;
       // insert user account to table user_info
-      connection.query(`INSERT INTO user_info (username, email, password) values (\'${user.name}\', \'${user.email}\', \'${user.password}\')`, function (error, results, fields) {
+      connection.query(`INSERT INTO user_info (username, email, password) values (\'${user.name}\', \'${user.email}\', \'${user.password}\')`, 
+      function (error, results, fields) {
         if (error) {
           return connection.rollback(function() {
-            throw error;
+            return reject(err);
           });
         }
-          id = results.insertId
-          console.log(id);
-        });
-
-        // query to insert zipCode In lattitude and longitude
-        connection.query(`INSERT INTO user_info (username, email, password) values (\'${user.name}\', \'${user.email}\', \'${user.password}\')`, function (error, results, fields) {
+        
+        id = results.insertId
+        
+        const geo = location.getGeoCoordination(user.zipcode);
+          // query to insert zipCode In lattitude and longitude
+        const temp = `INSERT INTO location values (${id}, ${geo.lat}, ${geo.long})`;
+        console.log(temp);
+          
+        connection.query(temp, function (error, results, fields) {
           if (error) {
             return connection.rollback(function() {
-              throw error;
+              return reject(err);
             });
           }
-            id = results.insertId
-            console.log(id);
+
+
+          connection.commit(function(err) {
+            if (err) {
+              return connection.rollback(function() {
+                return reject(err);
+              });
+            }
+            console.log('success!');
+            return resolve();
           });
 
-        // if all all successful, commit to the database
-        connection.commit(function(err) {
-          if (err) {
-            return connection.rollback(function() {
-              throw err;
-            });
-          };
         });
-        
 
       });
-      
+
     });
+  });
+}
 
-  }
-
-
-  module.exports.userByID = function(id = "")
-  {
+  module.exports.userByID = function(id = "") {
       return new Promise(function(resolve, reject) {
           
       connection.query(`select _id from user_info where _id = \'${id}\';`, (err, usr, fields) => {
@@ -107,3 +109,4 @@ var id;
       });
     });
   }
+
