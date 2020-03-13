@@ -32,13 +32,12 @@ module.exports.userFindOne = function(email = "")
 {
     return new Promise(function(resolve, reject) {
         
-    connection.query(`select _id, email, password from user_info where email = \'${email}\';`, (err, usr, fields) => {
+    connection.query(`select _id, email, username, password from user_info where email = \'${email}\';`, (err, usr, fields) => {
         if (err)
           return reject(err);
-
+        // no error, just not in the database so resolve and return null
         if(isEmpty(usr))
           resolve(null);
-
         // hackie, converts into a JSON format to later be a Javascript Object
         resolve(JSON.parse(JSON.stringify(usr))[0]);
     });
@@ -53,6 +52,7 @@ var id;
     connection.beginTransaction(function(err) {
       if (err) { throw err; }
 
+      // insert user account to table user_info
       connection.query(`INSERT INTO user_info (username, email, password) values (\'${user.name}\', \'${user.email}\', \'${user.password}\')`, function (error, results, fields) {
         if (error) {
           return connection.rollback(function() {
@@ -63,6 +63,7 @@ var id;
           console.log(id);
         });
 
+        // query to insert zipCode In lattitude and longitude
         connection.query(`INSERT INTO user_info (username, email, password) values (\'${user.name}\', \'${user.email}\', \'${user.password}\')`, function (error, results, fields) {
           if (error) {
             return connection.rollback(function() {
@@ -73,6 +74,7 @@ var id;
             console.log(id);
           });
 
+        // if all all successful, commit to the database
         connection.commit(function(err) {
           if (err) {
             return connection.rollback(function() {
@@ -83,13 +85,25 @@ var id;
         
 
       });
-
-
       
     });
-
-    
 
   }
 
 
+  module.exports.userByID = function(id = "")
+  {
+      return new Promise(function(resolve, reject) {
+          
+      connection.query(`select _id from user_info where _id = \'${id}\';`, (err, usr, fields) => {
+          if (err)
+            return reject(err);
+          // no error, just not in the database so resolve and return null
+          if(isEmpty(usr))
+            resolve(null);
+  
+          // hackie, converts into a JSON format to later be a Javascript Object
+          resolve(JSON.parse(JSON.stringify(usr))[0]);
+      });
+    });
+  }

@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const validateRegisterInput = require('./validation/register')
+const validateRegisterInput = require('./validation/register');
+const validateLoginInput = require("./validation/login");
 const database = require('../Model/database');
 
 
@@ -39,10 +40,73 @@ router.post("/register", (req, res) => {
           });
         });
 
+        return res.status(200).send('Account created')
       }
     });
     
   });
+
+
+
+  router.post("/login", (req, res) => {
+
+    const { errors, isValid } = validateLoginInput(req.body);
+
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+    else {
+      // if NUll no account, resolves to null if empty
+      database.userFindOne(req.body.email)
+      .then((user) => {
+        if(user == null)
+          return res.status(400)
+          .send({
+            success: false,
+            error: `NO ACCOUNT UNDER ${req.body}`
+          });
+
+        else {
+          // compares input value to the hash password
+          bcrypt.compare(req.body.password, user.password).then(isMatch => {
+            if (isMatch) {
+              // User matched
+              // Create JWT Payload
+              const payload = {
+                id: user._id,
+                name: user.username
+              };
+              console.log(process.env.KEY);
+              // Sign token
+              const token = jwt.sign(
+                payload,
+                process.env.KEY,
+                {
+                  expiresIn: 60 * 60 // 1 hour in seconds
+                }
+              );
+                console.log(token);
+                res.json({
+                  success: true,
+                  token: "Bearer " + token
+                });
+              
+            } 
+            else {
+              return res
+                .status(400)
+                .json({ error: "Password incorrect", success: false});
+            }
+
+          });
+        }
+
+      })
+    }
+
+
+
+  })
 
 
 module.exports = router;

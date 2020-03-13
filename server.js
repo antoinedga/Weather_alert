@@ -5,7 +5,7 @@ const app = express();
 const axios = require('axios');
 const path = require('path');
 const user = require('./Controller/user');
-require('dotenv').config;
+require('dotenv').config();
 const db = require('./Model/database.js');
 
 const port = process.env.PORT || 5000;
