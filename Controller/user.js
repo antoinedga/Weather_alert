@@ -5,6 +5,8 @@ const jwt = require("jsonwebtoken");
 const validateRegisterInput = require('./validation/register');
 const validateLoginInput = require("./validation/login");
 const database = require('../Model/database');
+const passport = require('passport');
+require('./passport')(passport);
 
 
 // @route POST api/users/register
@@ -51,6 +53,12 @@ router.post("/register", (req, res) => {
     
   });
 
+  router.get('/test',passport.authenticate('jwt',{session: false}),
+  function(req, res) {
+    // console.log(req);
+    return res.status(200).send();
+  });
+
 
 
   router.post("/login", (req, res) => {
@@ -90,12 +98,8 @@ router.post("/register", (req, res) => {
                   expiresIn: 60 * 60 // 1 hour in seconds
                 }
               );
-                console.log(token);
-                res.json({
-                  success: true,
-                  token: "Bearer " + token
-                });
-              
+                res.cookie('jwt', token, {expires: new Date(Date.now() + 5 * 3600000)});
+                res.json({ success: true, token: 'JWT ' + token });
             } 
             else {
               return res

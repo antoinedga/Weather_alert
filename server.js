@@ -1,9 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookies = require('cookie-parser');
 const cors = require('cors');
 const app = express();
-const axios = require('axios');
 const path = require('path');
+const passport = require('passport');
 const user = require('./Controller/user');
 require('dotenv').config();
 const db = require('./Model/database.js');
@@ -21,7 +22,12 @@ app.use(
     extended: false
   })
 );
+
+require('./Controller/passport');
+
+app.use(cookies());
 app.use(bodyParser.json());
+app.use(passport.initialize());
 // DB Config
 app.use('/user', user);
 

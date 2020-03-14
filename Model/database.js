@@ -94,18 +94,18 @@ module.exports.createNewUser = function(user) {
   });
 }
 
-  module.exports.userByID = function(id = "") {
+  module.exports.userByID = function(id = 0) {
+
       return new Promise(function(resolve, reject) {
           
-      connection.query(`select _id from user_info where _id = \'${id}\';`, (err, usr, fields) => {
+      connection.query(`select _id from user_info where _id = ${id};`, (err, usr, fields) => {
           if (err)
             return reject(err);
           // no error, just not in the database so resolve and return null
           if(isEmpty(usr))
-            resolve(null);
-  
-          // hackie, converts into a JSON format to later be a Javascript Object
-          resolve(JSON.parse(JSON.stringify(usr))[0]);
+            resolve(false);
+          const id_temp = JSON.parse(JSON.stringify(usr))[0]._id
+          resolve({status: true, id: id_temp});
       });
     });
   }
