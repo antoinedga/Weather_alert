@@ -1,19 +1,16 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const cookies = require('cookie-parser');
+var cookieParser = require('cookie-parser')
+const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
+const user = require('./Controller/Routes/user');
 const path = require('path');
 const passport = require('passport');
-const user = require('./Controller/user');
-require('dotenv').config();
-const db = require('./Model/database.js');
 
-const port = process.env.PORT || 5000;
+require('dotenv').config();
 
 app.use(express.static(path.join(__dirname, 'build')));
-
-db.start_connection();
 app.use(cors());
  
 // Bodyparser middleware
@@ -23,16 +20,29 @@ app.use(
   })
 );
 
-require('./Controller/passport');
-
-app.use(cookies());
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(passport.initialize());
+
+// Passport config
+require("./Controller/passport")(passport);
+
+const port = process.env.PORT || 8080;
 // DB Config
+
 app.use('/user', user);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
-})
+});
+
+mongoose.connect(
+    process.env.MONGO_URL,
+    { useNewUrlParser: true,
+      useUnifiedTopology: true  }
+  )
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
+
 
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));

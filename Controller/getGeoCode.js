@@ -9,7 +9,7 @@ module.exports.getGeoCoordination = function getGeoCoordination(zipCode)
     }
 
     var temp = zipfunc.lookup(zipCode);
-
+    console.log(temp + " from the look up\n\n");
     if (temp == undefined)
         return null
 
