@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const app = express();
 const user = require('./Controller/Routes/user');
+const hour_controller = require("./Controller/Routes/hours");
 const path = require('path');
 const passport = require('passport');
 
@@ -31,6 +32,7 @@ const port = process.env.PORT || 8080;
 // DB Config
 
 app.use('/user', user);
+app.use('/api/hours', hour_controller);
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'))
