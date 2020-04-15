@@ -1,26 +1,34 @@
 const Validator = require("validator");
 const isEmpty = require("is-empty");
 const zipCode = require('../getGeoCode');
-
-
+var sanitize = require('mongo-sanitize');
 
 
 module.exports = function validateRegisterInput(data) {
   let errors = {};
 // Convert empty fields to an empty string so we can use validator functions
   data.name = !isEmpty(data.name) ? data.name : "";
+  data.zipCode = !isEmpty(data.zipCode) ? data.zipCode : "";
   data.email = !isEmpty(data.email) ? data.email : "";
   data.password = !isEmpty(data.password) ? data.password : "";
   data.password2 = !isEmpty(data.password2) ? data.password2 : "";
+
+  data.name = sanitize(data.name);
+  data.zipCode = sanitize(data.zipCode);
+  data.email = sanitize(data.email);
+  data.password = sanitize(data.password);
+  data.password2 = sanitize(data.password2);
+
+
 // Name checks
   if (Validator.isEmpty(data.name)) {
     errors.name = "Name field is required";
   }
 
-  if (Validator.isEmpty(data.zipcode)) {
+  if (Validator.isEmpty(data.zipCode)) {
     errors.zipCode = "zipCode field is required";
   }
-  else if(zipCode.getGeoCoordination(data.zipcode) == null)
+  else if(zipCode.getGeoCoordination(data.zipCode) == null)
     errors.zipCode = "INVALID zipCode";
 
 // Email checks

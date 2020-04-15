@@ -1,6 +1,5 @@
 var nodemailer = require('nodemailer');
 
-var mailOptions;
 var transporter;
 
 function createEmailTransport() {
@@ -14,23 +13,30 @@ function createEmailTransport() {
   });
 }
 
-function createMailOption(email_list, message)
-{
-    mailOptions =
+function createMailOption(email, message) {
+  var mailOptions =
       {
       from: 'ag.weatheremail@gmail.com',
-      to: email_list.join(', '),
+      to: email,
       subject: 'Weather Alert Report',
-      text: message
+      html: message
     };
+    return mailOptions
+} 
+
+function sendEmailToUser(user, mesaage, mailOptions) {
+
+
+
+  transporter.sendMail(mailOptions, function(error, info){
+
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  
+  });
 
 }
 
-
-transporter.sendMail(mailOptions, function(error, info){
-  if (error) {
-    console.log(error);
-  } else {
-    console.log('Email sent: ' + info.response);
-  }
-});

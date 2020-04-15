@@ -1,18 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Nav from './navbar';
-import App from './App';
-import WeatherCardHolder from './weatherCardHolder.js';
-import WeatherCard from './weatherCard';
 import * as serviceWorker from './serviceWorker';
-
+import { BrowserRouter} from 'react-router-dom';
+import App from "./App";
 
 
 ReactDOM.render(
-<div>
-<Nav />
-<WeatherCardHolder/>
-</div>
+<BrowserRouter>
+    <App/>
+</BrowserRouter>
 , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

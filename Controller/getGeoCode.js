@@ -15,5 +15,6 @@ module.exports.getGeoCoordination = function getGeoCoordination(zipCode)
 
     geo.lat = temp.latitude;
     geo.long = temp.longitude;
+    geo.city = temp.city;
     return geo;
 };
