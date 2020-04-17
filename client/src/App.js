@@ -4,6 +4,7 @@ import Landing from './components/landing.page.js';
 import Login from './components/login/login'
 import Dashboard from './components/authentication/dashboard/dashboard';
 import PrivateRoute from './components/authentication/privateRoutes';
+import ErrorPage from './components/404page';
 import {
   BrowserRouter as Router,
   Switch,
@@ -30,9 +31,11 @@ export default function App() {
           <Route exact path="/">
             <Landing/>
           </Route>
-        <PrivateRoute exact path="/dashboard" component={Dashboard}/>
+        <PrivateRoute exact path="/dashboard">
+          <Dashboard/>
+        </PrivateRoute>
          <Route path="*">
-           404 GG
+           <ErrorPage/>
          </Route>
          
         </Switch>

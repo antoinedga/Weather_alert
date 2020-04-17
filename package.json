@@ -37,6 +37,7 @@
     "recharts": "^1.8.5",
     "semantic-ui-react": "^0.88.2",
     "universal-cookie": "^4.0.3",
+    "us-zips": "^4.0.1",
     "validator": "^12.2.0",
     "zipcodes": "^8.0.0"
   },

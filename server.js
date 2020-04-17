@@ -7,6 +7,7 @@ const app = express();
 const user = require('./Controller/Routes/user');
 const weather = require('./Controller/Routes/weather');
 const hour_controller = require("./Controller/Routes/hours");
+const EmailRoutine = require("./email_routin");
 const path = require('path');
 const passport = require('passport');
 
@@ -45,7 +46,13 @@ mongoose.connect(
     { useNewUrlParser: true,
       useUnifiedTopology: true  }
   )
-  .then(() => console.log("MongoDB successfully connected"))
+  .then(() => { 
+    console.log("MongoDB successfully connected");
+
+    console.log('Initializing Email Routine');
+    EmailRoutine();
+
+  })
   .catch(err => console.log(err));
 
 
