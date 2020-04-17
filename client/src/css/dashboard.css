@@ -1,0 +1,19 @@
+div.scrollmenu {
+    overflow: auto;
+    display: flex;
+    
+    margin-top: 40px;
+  }
+  
+  div.scrollmenu .w3-card {
+    display: inline-block;
+    text-align: center;
+  }
+
+  footer{
+    text-align: left;
+    font-size: .8rem;
+  }
+
+
+ 
