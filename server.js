@@ -13,7 +13,7 @@ const passport = require('passport');
 
 require('dotenv').config();
 
-app.use(express.static(path.join(__dirname,'client' ,'build')));
+app.use(express.static(path.join(__dirname,'client ' ,'build')));
 app.use(cors());
  
 // Bodyparser middleware
@@ -39,7 +39,7 @@ app.use('/api/weather', weather)
 
 app.get('/', (req, res) => {
   
-  res.sendFile('index.html');
+  res.sendFile(path.join(__dirname, 'client' ,'build', 'index.html'))
 });
 
 mongoose.connect(
