@@ -10,6 +10,7 @@
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
+  "proxy": "https://weather-emai-alert.herokuapp.com/",
   "author": "Antoine Gordon-Alvarez",
   "license": "ISC",
   "dependencies": {
