@@ -38,7 +38,8 @@ app.use('/api/hours', hour_controller);
 app.use('/api/weather', weather)
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+  
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
 });
 
 mongoose.connect(
