@@ -13,7 +13,7 @@ const passport = require('passport');
 
 require('dotenv').config();
 
-app.use(express.static(path.join(__dirname, 'client' ,'build')));
+app.use(express.static(path.join(__dirname, 'client' ,'public')));
 app.use(cors());
  
 // Bodyparser middleware
