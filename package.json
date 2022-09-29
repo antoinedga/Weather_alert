@@ -39,7 +39,7 @@
     "passport-local": "^1.0.0",
     "react-cookie": "^4.0.3",
     "react-router-dom": "^5.1.2",
-    "recharts": "^1.8.5",
+    "recharts": "^2.1.14",
     "semantic-ui-react": "^0.88.2",
     "universal-cookie": "^4.0.3",
     "us-zips": "^4.0.1",
